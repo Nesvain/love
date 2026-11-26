@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crónicas de Nuestro Amor • Eorzea & Más Allá 💜✨</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Google Fonts: Tipografías estilo Fantasía JRPG / FFXIV y Anime Romántico -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ccs modo ffxiv por luxo) -->
+    <style>
+        /* ==========================================================================
+   BOTÓN / REPRODUCTOR FLOTANTE DE MÚSICA DE FONDO
+   ========================================================================== */
+.reproductor-fondo {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 1050;
+    background: linear-gradient(135deg, rgba(43, 16, 56, 0.94), rgba(106, 44, 112, 0.94));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 2px solid #e2b857;
+    border-radius: 50px;
+    padding: 10px 18px 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 30px rgba(43, 16, 56, 0.45), 0 0 18px rgba(255, 126, 179, 0.35);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reproductor-fondo:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 35px rgba(255, 126, 179, 0.55);
+}
+
+.btn-musica-circular {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid #f9e29c;
+    background: conic-gradient(from 0deg, #ff7eb3, #9b51e0, #e2b857, #ff7eb3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.btn-musica-circular.girando {
+    animation: girarDiscoMusica 6s linear infinite;
+    box-shadow: 0 0 14px #ff7eb3;
+}
+
+.btn-musica-circular i {
+    background: #2b1038;
+    color: #f9e29c;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+}
+
+@keyframes girarDiscoMusica {
+    100% { transform: rotate(360deg); }
+}
+
+.info-musica {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.estado-musica {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #ffc4dd;
+    font-weight: 700;
+}
+
+.titulo-musica {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #f9e29c;
+    white-space: nowrap;
+}
+
+.slider-volumen {
+    width: 65px;
+    accent-color: #ff7eb3;
+    cursor: pointer;
+}
+
+@media (max-width: 576px) {
+    .reproductor-fondo {
+        bottom: 14px;
+        right: 14px;
+        padding: 8px 14px 8px 10px;
+    }
+    .slider-volumen {
+        display: none;
+    }
+}
+        /* ==========================================================================
+           VARIABLES DE COLOR (Paleta Morado, Rosita Pastel & Cristales de Éter)
+           ========================================================================== */
+        :root {
+            --morado-abismo: #2b1038;
+            --morado-real: #6a2c70;
+            --morado-magico: #9b51e0;
+            --lila-cristal: #d7bde2;
+            --rosita-sakura: #ff7eb3;
+            --rosita-pastel: #ffc4dd;
+            --fondo-etereo: #fdf5fa;
+            --dorado-ffxiv: #e2b857;
+            --dorado-brillo: #f9e29c;
+            --texto-principal: #351c3d;
+            --cristal-blanco: rgba(255, 250, 253, 0.88);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            color: var(--texto-principal);
+            background-color: var(--fondo-etereo);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(255, 196, 221, 0.45) 0%, transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(215, 189, 226, 0.5) 0%, transparent 45%),
+                radial-gradient(circle at 50% 80%, rgba(255, 126, 179, 0.25) 0%, transparent 50%);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Tipografías Temáticas */
+        .font-fantasia {
+            font-family: 'Cinzel Decorative', serif;
+            letter-spacing: 1px;
+        }
+
+        .font-anime-script {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* ==========================================================================
+           PARTÍCULAS DE ÉTER Y PÉTALOS DE SAKURA FLOTANTES DE FONDO
+           ========================================================================== */
+        .particulas-fondo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particula-eter {
+            position: absolute;
+            bottom: -30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffffff, var(--rosita-sakura), var(--morado-magico));
+            box-shadow: 0 0 12px var(--rosita-sakura), 0 0 20px var(--morado-magico);
+            opacity: 0.6;
+            animation: flotarEter linear infinite;
+        }
+
+        @keyframes flotarEter {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.75;
+            }
+            80% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-110vh) translateX(40px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* ==========================================================================
+           NAVBAR ESTILO INTERFAZ DE EORZEA (HUD Cristalino)
+           ========================================================================== */
+        .navbar-ffxiv {
+            background: rgba(43, 16, 56, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 2px solid var(--dorado-ffxiv);
+            box-shadow: 0 4px 25px rgba(106, 44, 112, 0.35);
+            z-index: 1030;
+        }
+
+        .navbar-brand {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.35rem;
+            color: var(--dorado-brillo) !important;
+            text-shadow: 0 0 10px rgba(226, 184, 87, 0.6);
+        }
+
+        .nav-link {
+            color: #fce4ec !important;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin: 0 4px;
+            padding: 8px 14px !important;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 126, 179, 0.2);
+            border-color: var(--dorado-ffxiv);
+            color: var(--dorado-brillo) !important;
+            transform: translateY(-2px);
+        }
+
+        /* ==========================================================================
+           HERO / PORTADA ANIME & FFXIV
+           ========================================================================== */
+        .hero-eorzea {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 70px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Cristal de Éter / Soul Crystal animado en el Hero */
+        .cristal-alma {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--rosita-sakura), var(--morado-magico), #4a154b);
+            clip-path: polygon(50% 0%, 90% 25%, 90% 75%, 50% 100%, 10% 75%, 10% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(255, 126, 179, 0.8);
+            animation: latidoCristal 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        .cristal-alma i {
+            color: white;
+            font-size: 1.8rem;
+            filter: drop-shadow(0 0 6px rgba(255,255,255,0.9));
+        }
+
+        @keyframes latidoCristal {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.06); }
+        }
+
+        .quest-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(90deg, var(--morado-abismo), var(--morado-real));
+            color: var(--dorado-brillo);
+            border: 1.5px solid var(--dorado-ffxiv);
+            padding: 7px 22px;
+            border-radius: 50px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 18px rgba(106, 44, 112, 0.25);
+            margin-bottom: 18px;
+        }
+
+        .hero-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(2.2rem, 5.5vw, 4.2rem);
+            font-weight: 700;
+            color: var(--morado-abismo);
+            text-shadow: 2px 4px 15px rgba(255, 126, 179, 0.35);
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .hero-subtitle {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.8rem, 3.8vw, 2.7rem);
+            color: var(--rosita-sakura);
+            margin-bottom: 22px;
+        }
+
+        /* Botones estilo FFXIV / Anime */
+        .btn-ffxiv {
+            background: linear-gradient(135deg, var(--morado-real), var(--rosita-sakura));
+            border: 2px solid var(--dorado-ffxiv);
+            color: white;
+            padding: 13px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 25px rgba(155, 81, 224, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .btn-ffxiv:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(255, 126, 179, 0.55);
+            color: var(--dorado-brillo);
+        }
+
+        .btn-limit-break {
+            background: linear-gradient(135deg, #2b1038, #6a2c70);
+            border: 2px solid var(--dorado-brillo);
+            color: var(--dorado-brillo);
+            padding: 13px 28px;
+            border-radius: 50px;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(226, 184, 87, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-limit-break:hover {
+            background: linear-gradient(135deg, var(--rosita-sakura), var(--morado-magico));
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 0 28px rgba(255, 126, 179, 0.7);
+        }
+
+        /* ==========================================================================
+           ENCABEZADOS DE SECCIÓN ESTILO CRÓNICA DE FANTASÍA
+           ========================================================================== */
+        .section-padding {
+            padding: 85px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-tag {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.75rem;
+            color: var(--rosita-sakura);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .section-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(1.8rem, 3.8vw, 2.6rem);
+            font-weight: 700;
+            color: var(--morado-abismo);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 16px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--dorado-ffxiv), var(--rosita-sakura), var(--dorado-ffxiv), transparent);
+        }
+
+        .section-title::after {
+            content: '✦';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--dorado-ffxiv);
+            background: var(--fondo-etereo);
+            padding: 0 12px;
+            font-size: 1.2rem;
+        }
+
+        /* ==========================================================================
+           CARRUSEL DE RECUERDOS (MARCO DE CRISTAL DE ÉTER)
+           ========================================================================== */
+        .marco-cristal-carousel {
+            background: var(--cristal-blanco);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            padding-bottom: 36px;
+            border-radius: 28px;
+            border: 2px solid var(--dorado-ffxiv);
+            box-shadow: 0 18px 45px rgba(43, 16, 56, 0.14), inset 0 0 20px rgba(255, 196, 221, 0.4);
+        }
+        .marco-cristal-carousel .carousel-indicators {
+            bottom: 6px;
+            margin-bottom: 0;
+        }
+
+        .carousel-item img {
+            height: 520px;
+            object-fit: cover;
+            border-radius: 18px;
+            border: 3px solid var(--rosita-pastel);
+        }
+        
+        
+
+        @media (max-width: 768px) {
+            .carousel-item img {
+                height: 350px;
+            }
+        }
+
+        /* Caja de diálogo estilo JRPG / FFXIV debajo de cada foto */
+        .dialogo-jrpg {
+            background: linear-gradient(135deg, rgba(43, 16, 56, 0.94), rgba(106, 44, 112, 0.92));
+            color: white;
+            border: 1.5px solid var(--dorado-ffxiv);
+            border-radius: 18px;
+            padding: 18px 24px;
+            margin-top: 18px;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(43, 16, 56, 0.25);
+        }
+
+        .dialogo-jrpg h4 {
+            color: var(--dorado-brillo);
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 1.15rem;
+            margin-bottom: 6px;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: var(--morado-abismo);
+            border: 2px solid var(--dorado-ffxiv);
+            border-radius: 50%;
+            padding: 22px;
+            background-size: 55%;
+        }
+
+        /* ==========================================================================
+           GALERÍA ESTILO ANIME / OBRA MAESTRA DE EORZEA
+           ========================================================================== */
+        .card-anime-obra {
+            background: var(--cristal-blanco);
+            border-radius: 22px;
+            padding: 16px;
+            border: 2px solid var(--lila-cristal);
+            box-shadow: 0 10px 28px rgba(106, 44, 112, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-anime-obra:hover {
+            transform: translateY(-10px);
+            border-color: var(--dorado-ffxiv);
+            box-shadow: 0 18px 40px rgba(255, 126, 179, 0.28);
+        }
+
+        .obra-img-box {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 4 / 5;
+            border: 2px solid var(--rosita-pastel);
+        }
+
+        .obra-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .card-anime-obra:hover .obra-img-box img {
+            transform: scale(1.07);
+        }
+
+        .etiqueta-rareza {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(43, 16, 56, 0.85);
+            color: var(--dorado-brillo);
+            border: 1px solid var(--dorado-ffxiv);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            backdrop-filter: blur(4px);
+        }
+
+        .placa-cristal {
+            background: linear-gradient(180deg, #fff8fc, #f5eaf9);
+            border-radius: 15px;
+            padding: 16px;
+            margin-top: 15px;
+            border: 1px solid var(--rosita-pastel);
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ==========================================================================
+           VENTANAS DE DIÁLOGO JRPG / PERGAMINOS ROMÁNTICOS (4 Secciones)
+           ========================================================================== */
+        .ventana-historia-ffxiv {
+            background: linear-gradient(145deg, #ffffff 0%, #fff0f7 55%, #f4e6fa 100%);
+            border: 2px solid var(--dorado-ffxiv);
+            border-radius: 28px;
+            padding: 40px 32px;
+            box-shadow: 0 15px 40px rgba(106, 44, 112, 0.12);
+            position: relative;
+        }
+
+        .ventana-historia-ffxiv::after {
+            content: '✦ ❖ ✦';
+            display: block;
+            text-align: center;
+            color: var(--dorado-ffxiv);
+            margin-top: 20px;
+            font-size: 1.1rem;
+            letter-spacing: 6px;
+        }
+
+        .card-atributo-anime {
+            background: white;
+            border-radius: 22px;
+            padding: 28px 22px;
+            border: 1.5px solid var(--lila-cristal);
+            box-shadow: 0 10px 25px rgba(106, 44, 112, 0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-atributo-anime::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--morado-magico), var(--rosita-sakura), var(--dorado-ffxiv));
+        }
+
+        .card-atributo-anime:hover {
+            transform: translateY(-6px);
+            border-color: var(--rosita-sakura);
+            box-shadow: 0 15px 35px rgba(255, 126, 179, 0.22);
+        }
+
+        .gema-icono {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--morado-abismo), var(--morado-real));
+            border: 1.5px solid var(--dorado-ffxiv);
+            color: var(--dorado-brillo);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin: 0 auto 18px;
+            box-shadow: 0 6px 15px rgba(43, 16, 56, 0.2);
+        }
+
+        /* Lista estilo Misiones de Felicidad */
+        .quest-felicidad {
+            background: white;
+            border-radius: 18px;
+            padding: 18px 24px;
+            margin-bottom: 16px;
+            border: 1.5px solid var(--rosita-pastel);
+            border-left: 6px solid var(--morado-magico);
+            box-shadow: 0 6px 18px rgba(106, 44, 112, 0.07);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .quest-felicidad:hover {
+            transform: translateX(8px);
+            border-left-color: var(--rosita-sakura);
+            background: #fff9fc;
+        }
+
+        /* ==========================================================================
+           NUEVA SECCIÓN: BANDA SONORA & RECUERDOS EN VIDEO (ORCHESTRION ROLLS)
+           ========================================================================== */
+        .orchestrion-card {
+            background: linear-gradient(135deg, rgba(43, 16, 56, 0.95), rgba(88, 33, 94, 0.92));
+            color: white;
+            border: 1.5px solid var(--dorado-ffxiv);
+            border-radius: 22px;
+            padding: 22px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 12px 30px rgba(43, 16, 56, 0.22);
+            transition: all 0.35s ease;
+        }
+
+        .orchestrion-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 16px 38px rgba(255, 126, 179, 0.35);
+            border-color: var(--rosita-sakura);
+        }
+
+        .disco-giratorio {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, var(--rosita-sakura), var(--morado-magico), var(--dorado-ffxiv), var(--rosita-sakura));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 2px solid white;
+            animation: girarDisco 8s linear infinite;
+        }
+
+        .disco-giratorio i {
+            color: var(--morado-abismo);
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+            font-size: 0.95rem;
+        }
+
+        @keyframes girarDisco {
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-play-link {
+            background: linear-gradient(90deg, var(--rosita-sakura), var(--morado-magico));
+            color: white;
+            border: 1px solid var(--dorado-brillo);
+            border-radius: 50px;
+            padding: 9px 18px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-play-link:hover {
+            transform: scale(1.03);
+            color: var(--dorado-brillo);
+            box-shadow: 0 0 15px rgba(255, 126, 179, 0.6);
+        }
+
+        .video-cristal-box {
+            background: var(--cristal-blanco);
+            border: 2px solid var(--dorado-ffxiv);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 12px 32px rgba(43, 16, 56, 0.12);
+        }
+
+        .video-wrapper {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid var(--rosita-pastel);
+        }
+
+        /* ==========================================================================
+           MODAL LIMIT BREAK & PARTÍCULAS DE LLUVIA DE AMOR
+           ========================================================================== */
+        .modal-ffxiv .modal-content {
+            background: linear-gradient(180deg, #2b1038 0%, #521d59 100%);
+            color: white;
+            border: 2.5px solid var(--dorado-ffxiv);
+            border-radius: 28px;
+            box-shadow: 0 0 50px rgba(255, 126, 179, 0.5);
+        }
+
+        .lluvia-item {
+            position: fixed;
+            top: -50px;
+            user-select: none;
+            pointer-events: none;
+            z-index: 9999;
+            animation: caerMagia linear forwards;
+        }
+
+        @keyframes caerMagia {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(105vh) rotate(360deg) scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        /* ==========================================================================
+           FOOTER
+           ========================================================================== */
+        footer {
+            background: linear-gradient(135deg, #2b1038, #4c1b57);
+            color: white;
+            border-top: 2px solid var(--dorado-ffxiv);
+            padding: 50px 20px 30px;
+            margin-top: 60px;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Audio de fondo (guarda tu archivo en musica/nuestra_cancion.mp3) -->
+<audio id="audioFondo" loop preload="auto">
+    <source src="musica/dearly.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Botón flotante de música -->
+<div class="reproductor-fondo" title="Música de fondo">
+    <button type="button" class="btn-musica-circular" id="btnMusica" onclick="toggleMusica()" aria-label="Reproducir o pausar música">
+        <i class="bi bi-play-fill" id="iconoMusica"></i>
+    </button>
+    <div class="info-musica">
+        <span class="estado-musica" id="estadoMusica">Pausada</span>
+        <span class="titulo-musica">Dearly Beloved 💜</span>
+    </div>
+    <input type="range" class="slider-volumen" id="sliderVolumen" min="0" max="1" step="0.05" value="0.35" oninput="ajustarVolumen(this.value)" aria-label="Volumen">
+</div>
+
+    <!-- Partículas ambientales de Éter y Sakura -->
+    <div class="particulas-fondo" id="contenedorParticulas"></div>
+
+    <!-- ======================================================================
+         1. BARRA DE NAVEGACIÓN ESTILO HUD DE FFXIV
+         ====================================================================== -->
+    <nav class="navbar navbar-expand-lg navbar-ffxiv fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#inicio">
+                <i class="bi bi-gem me-1" style="color: var(--rosita-sakura);"></i> Eorzea & Tú
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#menuEorzea" aria-controls="menuEorzea" aria-expanded="false" aria-label="Abrir menú">
+                <i class="bi bi-stars fs-2" style="color: var(--dorado-brillo);"></i>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="menuEorzea">
+                <ul class="navbar-nav align-items-center text-center mt-3 mt-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#carrusel">Aventuras</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#galeria">Galería</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#cuanto-te-amo">Te Amo</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#razones">Enamorado</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#musica-videos">Canciones & Videos</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ======================================================================
+         2. HERO / PORTADA ANIME & FANTASÍA FFXIV
+         ====================================================================== -->
+    <header id="inicio" class="hero-eorzea">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    
+                    <!-- Cristal del Alma (Soul Crystal) -->
+                    <div class="cristal-alma" title="Cristal de Nuestro Amor">
+                        <i class="bi bi-heart-fill"></i>
+                    </div>
+
+                    <div class="quest-badge">
+                        <i class="bi bi-stars"></i> Misión Principal: Amarte Por Siempre <i class="bi bi-stars"></i>
+                    </div>
+
+                    <h1 class="hero-title">Crónicas de Nuestro Amor</h1>
+                    <p class="hero-subtitle">De Eorzea al mundo real, mi compañera de aventuras favorita</p>
+                    
+                    <p class="lead mb-4 px-md-5" style="color: var(--texto-principal); font-weight: 500;">
+                        Ni los cielos estrellados de FFXIV tienen tanta magia como estar contigo. Hice esta galería para ti, porque eres mi novia, mi persona favorita y mi compañera favorita dentro y fuera del juego.
+                    </p>
+
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="#carrusel" class="btn btn-ffxiv">
+                            <i class="bi bi-compass-fill me-2"></i> Iniciar Recorrido
+                        </a>
+                        <button type="button" class="btn btn-limit-break" onclick="activarLimitBreakAmor()">
+                            <i class="bi bi-lightning-charge-fill me-1"></i> ✨Limit Break de Amor✨
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ======================================================================
+         3. CARRUSEL DE RECUERDOS (FOTOS DE PAREJA & CAPTURAS DE FFXIV)
+         ====================================================================== -->
+    <section id="carrusel" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Memorias en nuestro mundo favorito</span>
+                <h2 class="section-title">Nuestras Aventuras Juntos</h2>
+                <p class="text-muted mt-3">Aqui estan nuestro momentos favoritos en FFXIV.</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="marco-cristal-carousel">
+                        <div id="carruselEorzea" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                            
+                            <!-- Indicadores -->
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carruselEorzea" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Recuerdo 1"></button>
+                                <button type="button" data-bs-target="#carruselEorzea" data-bs-slide-to="1" aria-label="Recuerdo 2"></button>
+                                <button type="button" data-bs-target="#carruselEorzea" data-bs-slide-to="2" aria-label="Recuerdo 3"></button>
+                                <button type="button" data-bs-target="#carruselEorzea" data-bs-slide-to="3" aria-label="Recuerdo 4"></button>
+                            </div>
+
+                            <!-- Diapositivas -->
+                            <div class="carousel-inner">
+                                
+                                <!-- FOTO / CAPTURA 1 -->
+                                <div class="carousel-item active">
+                                    <!-- Imagenes mega uwu -->
+                                    <img src="imagenes natha/teamo_1.png" 
+                                         onerror="this.src='https://placehold.co/1200x600/ffc4dd/2b1038?text=Nuestra+Foto+o+Captura+FFXIV+1'"
+                                         class="d-block w-100" alt="Recuerdo 1">
+                                    <div class="dialogo-jrpg">
+                                        <h4><i class="bi bi-chat-square-heart-fill me-2" style="color: var(--rosita-sakura);"></i>Capítulo I: Mi Compañera de Party Favorita</h4>
+                                        <p class="mb-0 small opacity-90">No importa qué dungeon, raid o aventura enfrentemos; contigo a mi lado ya gane.</p>
+                                    </div>
+                                </div>
+
+                                <!-- FOTO / CAPTURA 2 -->
+                                <div class="carousel-item">
+                                    <!-- magenes mega uwu -->
+                                    <img src="imagenes natha/Halloween Nine x Nexa(1).jpg" 
+                                         onerror="this.src='https://placehold.co/1200x600/d7bde2/2b1038?text=Nuestra+Foto+o+Captura+FFXIV+2'"
+                                         class="d-block w-100" alt="Recuerdo 2">
+                                    <div class="dialogo-jrpg">
+                                        <h4><i class="bi bi-chat-square-heart-fill me-2" style="color: var(--rosita-sakura);"></i>Capítulo II: Risas Infinitas</h4>
+                                        <p class="mb-0 small opacity-90">Contigo cada momento se siente lleno de luz, ternura y felicidad pura.</p>
+                                    </div>
+                                </div>
+
+                                <!-- FOTO / CAPTURA 3 -->
+                                <div class="carousel-item">
+                                    <!-- magenes mega uwu-->
+                                    <img src="imagenes natha/N&N.png" 
+                                         onerror="this.src='https://placehold.co/1200x600/ffc4dd/2b1038?text=Nuestra+Foto+o+Captura+FFXIV+3'"
+                                         class="d-block w-100" alt="Recuerdo 3">
+                                    <div class="dialogo-jrpg">
+                                        <h4><i class="bi bi-chat-square-heart-fill me-2" style="color: var(--rosita-sakura);"></i>Capítulo III: Bajo el Mismo Cielo Estrellado</h4>
+                                        <p class="mb-0 small opacity-90">Ya sea mirando las estrellas en Gridania o caminando juntos de la mano, mi hogar siempre eres tú.</p>
+                                    </div>
+                                </div>
+
+                                <!-- FOTO / CAPTURA 4 -->
+                                <div class="carousel-item">
+                                    <!-- magenes mega uwu -->
+                                    <img src="imagenes natha/My Light.png" 
+                                         onerror="this.src='https://placehold.co/1200x600/d7bde2/2b1038?text=Nuestra+Foto+o+Captura+FFXIV+4'"
+                                         class="d-block w-100" alt="Recuerdo 4">
+                                    <div class="dialogo-jrpg">
+                                        <h4><i class="bi bi-chat-square-heart-fill me-2" style="color: var(--rosita-sakura);"></i>Capítulo IV: Para Siempre Juntos</h4>
+                                        <p class="mb-0 small opacity-90">Eres mi historia favorita y apenas estamos escribiendo los primeros capítulos.</p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Controles -->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carruselEorzea" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Anterior</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carruselEorzea" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Siguiente</span>
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================================================
+         4. GALERÍA ESTILO ANIME: "OBRAS MAESTRAS DE NUESTRA HISTORIA"
+         ====================================================================== -->
+    <section id="galeria" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Nuestras Reliquias</span>
+                <h2 class="section-title">Galería de Nuestra Historia</h2>
+                <p class="text-muted mt-3">Cada foto aquí es un tesoro legendario guardado en mi corazón.</p>
+            </div>
+
+            <div class="row g-4">
+                
+                <!-- TARJETA 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card-anime-obra">
+                        <div class="obra-img-box">
+                            <span class="etiqueta-rareza">★ Reliquia N° 01</span>
+                            <!-- REEMPLAZA 'src' POR TU FOTO: ej. src="img/foto1.jpg" -->
+                            <img src="imagenes natha/smile.png" 
+                                 onerror="this.src='https://placehold.co/600x750/ffc4dd/2b1038?text=Foto+1:+Tu+Sonrisa'"
+                                 alt="Obra 1">
+                        </div>
+                        <div class="placa-cristal">
+                            <h4 class="font-fantasia fw-bold fs-5 mb-2" style="color: var(--morado-abismo);">“La Luz de Tu Sonrisa”</h4>
+                            <p class="small text-muted mb-0">Más brillante que cualquier cristal de Éter. Cuando sonríes, todo mi mundo se ilumina de rosita y morado.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TARJETA 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card-anime-obra">
+                        <div class="obra-img-box">
+                            <span class="etiqueta-rareza">★ Reliquia N° 02</span>
+                            <!-- REEMPLAZA 'src' POR TU FOTO: ej. src="img/foto2.jpg" -->
+                            <img src="imagenes natha/jiji.png" 
+                                 onerror="this.src='https://placehold.co/600x750/d7bde2/2b1038?text=Foto+2:+Nuestro+Mundo'"
+                                 alt="Obra 2">
+                        </div>
+                        <div class="placa-cristal">
+                            <h4 class="font-fantasia fw-bold fs-5 mb-2" style="color: var(--morado-abismo);">“Dos Almas Conectadas”</h4>
+                            <p class="small text-muted mb-0">Como el Eco que nos une, siento que nuestras almas estaban destinadas a encontrarse en esta vida.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TARJETA 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card-anime-obra">
+                        <div class="obra-img-box">
+                            <span class="etiqueta-rareza">★ Reliquia N° 03</span>
+                            <!-- REEMPLAZA 'src' POR TU FOTO: ej. src="img/foto3.jpg" -->
+                            <img src="imagenes natha/selfie.png" 
+                                 onerror="this.src='https://placehold.co/600x750/ffc4dd/2b1038?text=Foto+3:+Aventuras'"
+                                 alt="Obra 3">
+                        </div>
+                        <div class="placa-cristal">
+                            <h4 class="font-fantasia fw-bold fs-5 mb-2" style="color: var(--morado-abismo);">“Magia en Cada Momento”</h4>
+                            <p class="small text-muted mb-0">Contigo hasta las cosas más cotidianas parecen salidas de nuestro anime favorito.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TARJETA 4 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card-anime-obra">
+                        <div class="obra-img-box">
+                            <span class="etiqueta-rareza">★ Reliquia N° 04</span>
+                            <!-- REEMPLAZA 'src' POR TU FOTO: ej. src="img/foto4.jpg" -->
+                            <img src="imagenes natha/uwu5.png" 
+                                 onerror="this.src='https://placehold.co/600x750/d7bde2/2b1038?text=Foto+4:+Santuario'"
+                                 alt="Obra 4">
+                        </div>
+                        <div class="placa-cristal">
+                            <h4 class="font-fantasia fw-bold fs-5 mb-2" style="color: var(--morado-abismo);">“Mi Santuario en Tus Brazos”</h4>
+                            <p class="small text-muted mb-0">El lugar más seguro y cálido del universo entero siempre será un abrazo tuyo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TARJETA 5 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card-anime-obra">
+                        <div class="obra-img-box">
+                            <span class="etiqueta-rareza">★ Reliquia N° 05</span>
+                            <!-- REEMPLAZA 'src' POR TU FOTO: ej. src="img/foto5.jpg" -->
+                            <img src="imagenes natha/moto.png" 
+                                 onerror="this.src='https://placehold.co/600x750/ffc4dd/2b1038?text=Foto+5:+Sakura'"
+                                 alt="Obra 5">
+                        </div>
+                        <div class="placa-cristal">
+                            <h4 class="font-fantasia fw-bold fs-5 mb-2" style="color: var(--morado-abismo);">“Un camino juntos”</h4>
+                            <p class="small text-muted mb-0">Donde sea que nos lleve la vida, pero siempre juntos todos los días.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TARJETA 6 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card-anime-obra">
+                        <div class="obra-img-box">
+                            <span class="etiqueta-rareza">★ Reliquia N° 06</span>
+                            <!-- REEMPLAZA 'src' POR TU FOTO: ej. src="img/foto6.jpg" -->
+                            <img src="imagenes natha/uwu7.png" 
+                                 onerror="this.src='https://placehold.co/600x750/d7bde2/2b1038?text=Foto+6:+Eternidad'"
+                                 alt="Obra 6">
+                        </div>
+                        <div class="placa-cristal">
+                            <h4 class="font-fantasia fw-bold fs-5 mb-2" style="color: var(--morado-abismo);">“Nuestro Juramento Eterno”</h4>
+                            <p class="small text-muted mb-0">Prometo caminar a tu lado en todas las expansiones de nuestra vida.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================================================
+         5. CARTAS ROMÁNTICAS ESTILO PERGAMINO CRISTALINO / JRPG
+         ====================================================================== -->
+    
+    <!-- 5A. CUÁNTO TE AMO -->
+    <section id="cuanto-te-amo" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Desde el fondo de mi alma</span>
+                <h2 class="section-title">Cuánto Te Amo</h2>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <div class="ventana-historia-ffxiv text-center">
+                        <p class="fs-5 lh-lg mb-4">
+                            Te amo de una forma que ni siquiera las mejores historias de fantasía podrían describir. Te amo en cada sonrisa que me regalas, en cada charla hasta tarde, en cada partida compartida y en cada abrazo que me hace sentir que todo está bien.
+                        </p>
+                        <p class="fs-5 lh-lg mb-4">
+                            Si tuviera que elegir mil veces entre mil mundos distintos, en todos y cada uno de ellos volvería a buscarte y a elegirte a ti. Eres mi persona favorita, mi mayor alegría y el amor más bonito que me ha tocado vivir.
+                        </p>
+                        <div class="font-anime-script fs-2" style="color: var(--rosita-sakura);">
+                            Con todo mi corazón, tuyo hoy y siempre 💜✨
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5B. POR QUÉ ME ENAMORÉ DE TI & 5D. POR QUÉ ERES MARAVILLOSA -->
+    <section id="razones" class="section-padding">
+        <div class="container">
+            
+            <!-- Sub-bloque: Por qué me enamoré de ti -->
+            <div class="section-header">
+                <span class="section-tag">El hechizo que me conquistó</span>
+                <h2 class="section-title">Por Qué Me Enamoré de Ti</h2>
+            </div>
+
+            <div class="row g-4 mb-5 pb-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-atributo-anime text-center">
+                        <div class="gema-icono"><i class="bi bi-stars"></i></div>
+                        <h5 class="font-fantasia fw-bold mb-2" style="color: var(--morado-abismo);">Tu Mirada Mágica</h5>
+                        <p class="small text-muted mb-0">Porque tus ojos tienen un brillo especial que me atrapó desde el primer instante.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-atributo-anime text-center">
+                        <div class="gema-icono"><i class="bi bi-heart-fill"></i></div>
+                        <h5 class="font-fantasia fw-bold mb-2" style="color: var(--morado-abismo);">Tu Ternura</h5>
+                        <p class="small text-muted mb-0">Por lo dulce, cariñosa y especial que eres en cada pequeño gesto conmigo.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-atributo-anime text-center">
+                        <div class="gema-icono"><i class="bi bi-controller"></i></div>
+                        <h5 class="font-fantasia fw-bold mb-2" style="color: var(--morado-abismo);">Nuestra Complicidad</h5>
+                        <p class="small text-muted mb-0">Porque contigo puedo compartir mis gustos, reír sin parar y ser completamente yo mismo.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="card-atributo-anime text-center">
+                        <div class="gema-icono"><i class="bi bi-flower1"></i></div>
+                        <h5 class="font-fantasia fw-bold mb-2" style="color: var(--morado-abismo);">Tu Esencia Única</h5>
+                        <p class="small text-muted mb-0">Porque llenaste mi vida de colores morados y rositas donde antes todo era rutina.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-bloque: Por qué me haces feliz & Por qué eres maravillosa -->
+            <div class="row g-5 align-items-start mt-2">
+                
+                <!-- Columna Izquierda: Por qué me haces feliz -->
+                <div class="col-lg-6">
+                    <div class="text-center text-lg-start mb-4">
+                        <span class="section-tag">Mi Buff Permanente de Alegría</span>
+                        <h3 class="font-fantasia fw-bold" style="color: var(--morado-abismo);">Por Qué Me Haces Feliz</h3>
+                    </div>
+
+                    <div class="quest-felicidad">
+                        <i class="bi bi-emoji-heart-eyes-fill fs-2" style="color: var(--rosita-sakura);"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1" style="color: var(--morado-abismo);">Tu risa contagiosa</h6>
+                            <p class="small text-muted mb-0">Escucharte reír es automáticamente el mejor momento de todo mi día.</p>
+                        </div>
+                    </div>
+
+                    <div class="quest-felicidad">
+                        <i class="bi bi-shield-fill-plus fs-2" style="color: var(--morado-magico);"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1" style="color: var(--morado-abismo);">Eres mi mejor soporte y compañía</h6>
+                            <p class="small text-muted mb-0">Siempre sabes cómo animarme, cuidarme y hacerme sentir amado.</p>
+                        </div>
+                    </div>
+
+                    <div class="quest-felicidad">
+                        <i class="bi bi-sparkles fs-2" style="color: var(--dorado-ffxiv);"></i>
+                        <div>
+                            <h6 class="fw-bold mb-1" style="color: var(--morado-abismo);">Cada aventura juntos</h6>
+                            <p class="small text-muted mb-0">Ya sea explorando Eorzea o saliendo a pasear, todo es mil veces más divertido contigo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Por qué eres maravillosa -->
+                <div class="col-lg-6">
+                    <div class="text-center text-lg-start mb-4">
+                        <span class="section-tag">Una Persona Inigualable</span>
+                        <h3 class="font-fantasia fw-bold" style="color: var(--morado-abismo);">Por Qué Eres Maravillosa</h3>
+                    </div>
+
+                    <div class="ventana-historia-ffxiv p-4">
+                        <div class="mb-3">
+                            <h6 class="font-fantasia fw-bold" style="color: var(--morado-real);">✦ Tu Corazón Noble</h6>
+                            <p class="small text-muted mb-0">Tienes una bondad genuina y una forma hermosa de ver el mundo que te hace brillar.</p>
+                        </div>
+                        <hr style="border-color: var(--rosita-pastel);">
+                        <div class="mb-3">
+                            <h6 class="font-fantasia fw-bold" style="color: var(--morado-real);">✦ Tu Fuerza y Valentía</h6>
+                            <p class="small text-muted mb-0">Admiro muchísimo tu determinación y lo increíble que eres superando cada obstáculo.</p>
+                        </div>
+                        <hr style="border-color: var(--rosita-pastel);">
+                        <div>
+                            <h6 class="font-fantasia fw-bold" style="color: var(--morado-real);">✦ Eres Perfecta Siendo Tú</h6>
+                            <p class="small text-muted mb-0">No existe nadie en este mundo ni en ningún otro como tú. Estoy profundamente orgulloso de ti.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================================================
+         6. NUEVA SECCIÓN: NUESTRA BANDA SONORA & RECUERDOS EN VIDEO
+         (Inspirado en los Orchestrion Rolls de FFXIV + Anime Openings/OST)
+         ====================================================================== -->
+    <section id="musica-videos" class="section-padding">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Orchestrion Rolls de Nuestro Amor</span>
+                <h2 class="section-title">Nuestra Banda Sonora & Videos</h2>
+                <p class="text-muted mt-3">Canciones que me recuerdan a ti y videos especiales de nuestra historia.</p>
+            </div>
+
+            <!-- SUBSECCIÓN A: TARJETAS DE CANCIONES (LINKS A SPOTIFY / YOUTUBE) -->
+            <div class="row g-4 mb-5">
+                
+                <!-- CANCIÓN 1 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="orchestrion-card">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="disco-giratorio">
+                                    <i class="bi bi-music-note-beamed"></i>
+                                </div>
+                                <div>
+                                    <span class="badge rounded-pill mb-1" style="background: rgba(255,126,179,0.25); color: var(--dorado-brillo); border: 1px solid var(--dorado-ffxiv);">Orchestrion #01</span>
+                                    <!-- TÍTULO DE LA CANCIÓN -->
+                                    <h5 class="font-fantasia fs-6 mb-0" style="color: var(--dorado-brillo);">Canción para ti</h5>
+                                </div>
+                            </div>
+                            <!-- DEDICATORIA DE LA CANCIÓN -->
+                            <p class="small opacity-90 mb-4">
+                                “Esta cancion te la dedico, la letra es como me siento contigo y con tu amor.”
+                            </p>
+                        </div>
+                        <!-- link1-->
+                        <a href="https://youtu.be/lwycmhvk_s0?si=Yca4i5zdrV4b_slY" target="_blank" rel="noopener noreferrer" class="btn-play-link w-100">
+                            <i class="bi bi-play-circle-fill fs-5"></i> Escuchar Canción
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CANCIÓN 2 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="orchestrion-card">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="disco-giratorio">
+                                    <i class="bi bi-vinyl-fill"></i>
+                                </div>
+                                <div>
+                                    <span class="badge rounded-pill mb-1" style="background: rgba(255,126,179,0.25); color: var(--dorado-brillo); border: 1px solid var(--dorado-ffxiv);">Orchestrion #02</span>
+                                    <!-- TÍTULO DE LA CANCIÓN -->
+                                    <h5 class="font-fantasia fs-6 mb-0" style="color: var(--dorado-brillo);">Tema de Eorzea & osotros</h5>
+                                </div>
+                            </div>
+                            <!-- DEDICATORIA DE LA CANCIÓN -->
+                            <p class="small opacity-90 mb-4">
+                                “Esta cancion es especial, en este lugar nos encontramos y reecontramos.”
+                            </p>
+                        </div>
+                        <!-- link 2-->
+                        <a href="https://youtu.be/aL1WGXQduho?si=CRL8cPY18sh9wt8j" target="_blank" rel="noopener noreferrer" class="btn-play-link w-100">
+                            <i class="bi bi-play-circle-fill fs-5"></i> Escuchar Canción
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CANCIÓN 3 -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="orchestrion-card">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="disco-giratorio">
+                                    <i class="bi bi-heart-pulse-fill"></i>
+                                </div>
+                                <div>
+                                    <span class="badge rounded-pill mb-1" style="background: rgba(255,126,179,0.25); color: var(--dorado-brillo); border: 1px solid var(--dorado-ffxiv);">Orchestrion #03</span>
+                                    <!-- TÍTULO DE LA CANCIÓN -->
+                                    <h5 class="font-fantasia fs-6 mb-0" style="color: var(--dorado-brillo);">Opening de Nuestro Anime</h5>
+                                </div>
+                            </div>
+                            <!-- DEDICATORIA DE LA CANCIÓN -->
+                            <p class="small opacity-90 mb-4">
+                                “Si nuestra historia de amor fuera un anime, esta canción sería nuestro opening oficial.”
+                            </p>
+                        </div>
+                        <!-- link 3 -->
+                        <a href="https://youtu.be/BdyvfbCcO0A?si=jj1t5B_IG6yH9_Ir" target="_blank" rel="noopener noreferrer" class="btn-play-link w-100">
+                            <i class="bi bi-play-circle-fill fs-5"></i> Escuchar Canción
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SUBSECCIÓN B: VIDEOS ESPECIALES (Reproductor incrustado o enlaces) -->
+            <div class="row g-4 justify-content-center">
+                
+                <!-- VIDEO 1 (Reproductor de YouTube incrustado listo para usar) -->
+                <div class="col-lg-6">
+                    <div class="video-cristal-box h-100">
+                        <h5 class="font-fantasia fw-bold mb-2" style="color: var(--morado-abismo);">
+                            <i class="bi bi-film me-2" style="color: var(--rosita-sakura);"></i>Video Especial #01
+                        </h5>
+                        <p class="small text-muted mb-3">Nosotros dos en cualquier jueguito</p>
+                        
+                        <div class="ratio ratio-16x9 video-wrapper mb-3">
+                            <!-- INSTRUCCIÓN PARA CAMBIAR EL VIDEO:
+                                 En YouTube dale a "Compartir" -> "Incorporar" (Embed) y copia la URL que dice src="https://www.youtube.com/embed/CODIGO_DEL_VIDEO" -->
+                            <iframe src="https://www.youtube.com/embed/9ZF4BKGsYSk?si=yqwfImpjovSl6wAD" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        </div>
+
+                        <div class="text-end">
+                            <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" class="small fw-bold text-decoration-none" style="color: var(--morado-real);">
+                                Abrir en YouTube <i class="bi bi-box-arrow-up-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ==============================================================
+                 7. BOTÓN FINAL DE LIMIT BREAK / CARTA SECRETA
+                 ============================================================== -->
+            <div class="text-center mt-5 pt-4">
+                <div class="ventana-historia-ffxiv mx-auto" style="max-width: 680px;">
+                    <h4 class="font-fantasia fw-bold mb-2" style="color: var(--morado-abismo);">¿Lista para activar nuestro Limit Break? ✨</h4>
+                    <p class="text-muted mb-4">Presiona el botón cuando me extrañes o quieras recibir una bendición de Éter llena de amor.</p>
+                    <button type="button" class="btn btn-ffxiv btn-lg" data-bs-toggle="modal" data-bs-target="#modalLimitBreak" onclick="activarLimitBreakAmor()">
+                        <i class="bi bi-gem me-2"></i> Activar Limit Break: Amor Infinito
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ======================================================================
+         MODAL SORPRESA (LIMIT BREAK DE AMOR)
+         ====================================================================== -->
+    <div class="modal fade modal-ffxiv" id="modalLimitBreak" tabindex="-1" aria-labelledby="tituloLimitBreak" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content p-3 p-md-4 text-center">
+                <div class="modal-header border-0 justify-content-center">
+                    <h3 class="modal-title font-fantasia fs-3" id="tituloLimitBreak" style="color: var(--dorado-brillo);">
+                        ✦ LIMIT BREAK NIVEL 3: ETERNO AMOR ✦
+                    </h3>
+                </div>
+                <div class="modal-body px-md-5">
+                    <p class="font-anime-script fs-1 mb-3" style="color: var(--rosita-pastel);">
+                        Para la dueña de mi corazón 💜
+                    </p>
+                    <p class="fs-5 lh-lg mb-4">
+                        Has recibido la bendición máxima de mi corazón. Sin importar qué tan lejos estemos o qué tan ocupado esté el día, siempre voy a estar ahí para cuidarte, abrazarte y amarte con toda mi alma.
+                    </p>
+                    <div class="d-inline-block px-4 py-2 rounded-pill mb-2" style="background: rgba(255, 126, 179, 0.25); border: 1px solid var(--dorado-ffxiv); color: var(--dorado-brillo); font-weight: 700;">
+                        Buff Aplicado: Amada Infinitamente (Duración: ∞)
+                    </div>
+                </div>
+                <div class="modal-footer border-0 justify-content-center gap-2">
+                    <button type="button" class="btn btn-ffxiv" onclick="activarLimitBreakAmor()">
+                        <i class="bi bi-stars me-1"></i> Lanzar Más Cristales & Corazones
+                    </button>
+                    <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         FOOTER
+         ====================================================================== -->
+    <footer class="text-center">
+        <div class="container">
+            <h4 class="font-fantasia mb-2" style="color: var(--dorado-brillo);">Crónicas de Nuestro Amor</h4>
+            <p class="font-anime-script fs-3 mb-2" style="color: var(--rosita-pastel);">Para ti, mi guerrera de la luz favorita</p>
+            <div class="fs-4 mb-3">💜 🌸 💎 ✨ 💕</div>
+            <small class="opacity-75">Hecho con amor infinito • Eorzea & El Mundo Real</small>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Scripts de Partículas de Éter y Limit Break de Amor -->
+    <script>
+        // 1. Generar partículas ambientales flotantes (estilo cristales de Éter y Sakura)
+        document.addEventListener("DOMContentLoaded", () => {
+            const contenedor = document.getElementById("contenedorParticulas");
+            for (let i = 0; i < 22; i++) {
+                const particula = document.createElement("div");
+                particula.classList.add("particula-eter");
+                const size = Math.random() * 8 + 5;
+                particula.style.width = size + "px";
+                particula.style.height = size + "px";
+                particula.style.left = Math.random() * 100 + "vw";
+                particula.style.animationDuration = (Math.random() * 10 + 10) + "s";
+                particula.style.animationDelay = (Math.random() * 8) + "s";
+                contenedor.appendChild(particula);
+            }
+        });
+
+        // 2. Efecto Limit Break de Amor (Lluvia de corazones morados, rositas, cristales y sakura)
+        function activarLimitBreakAmor() {
+            const elementos = ['💜', '💖', '💎', '🌸', '✨', '💕', '🦋', '⭐'];
+            const total = 42;
+
+            for (let i = 0; i < total; i++) {
+                setTimeout(() => {
+                    const item = document.createElement('div');
+                    item.classList.add('lluvia-item');
+                    item.innerText = elementos[Math.floor(Math.random() * elementos.length)];
+                    item.style.left = Math.random() * 100 + 'vw';
+                    item.style.fontSize = (Math.random() * 20 + 18) + 'px';
+                    item.style.animationDuration = (Math.random() * 2.5 + 2.2) + 's';
+
+                    document.body.appendChild(item);
+
+                    setTimeout(() => {
+                        item.remove();
+                    }, 5000);
+                }, i * 70);
+            }
+        }
+    </script>
+    <script>
+        const audioFondo = document.getElementById("audioFondo");
+        const btnMusica = document.getElementById("btnMusica");
+        const iconoMusica = document.getElementById("iconoMusica");
+        const estadoMusica = document.getElementById("estadoMusica");
+        const sliderVolumen = document.getElementById("sliderVolumen");
+
+        let intervaloFade = null;
+
+        function actualizarEstadoMusica(reproduciendo) {
+            if (!btnMusica || !iconoMusica || !estadoMusica) return;
+
+            if (reproduciendo) {
+                btnMusica.classList.add("girando");
+                iconoMusica.classList.remove("bi-play-fill");
+                iconoMusica.classList.add("bi-pause-fill");
+                estadoMusica.textContent = "Sonando";
+            } else {
+                btnMusica.classList.remove("girando");
+                iconoMusica.classList.remove("bi-pause-fill");
+                iconoMusica.classList.add("bi-play-fill");
+                estadoMusica.textContent = "Pausada";
+            }
+        }
+
+        function iniciarMusicaConFade() {
+            if (!audioFondo || !audioFondo.paused) return;
+
+            clearInterval(intervaloFade);
+
+            const volRaw = sliderVolumen ? parseFloat(sliderVolumen.value) : 0.35;
+            const volDestino = Number.isNaN(volRaw) ? 0.35 : volRaw;
+            audioFondo.volume = 0;
+
+            audioFondo.play().then(() => {
+                actualizarEstadoMusica(true);
+
+                let volActual = 0;
+                intervaloFade = setInterval(() => {
+                    volActual += 0.03;
+                    if (volActual >= volDestino) {
+                        audioFondo.volume = volDestino;
+                        clearInterval(intervaloFade);
+                        intervaloFade = null;
+                    } else {
+                        audioFondo.volume = volActual;
+                    }
+                }, 80);
+            }).catch((err) => {
+                console.error("No se pudo reproducir el audio:", err);
+                actualizarEstadoMusica(false);
+            });
+        }
+
+        function toggleMusica() {
+            if (!audioFondo) return;
+
+            if (audioFondo.paused) {
+                iniciarMusicaConFade();
+            } else {
+                clearInterval(intervaloFade);
+                intervaloFade = null;
+                audioFondo.pause();
+                actualizarEstadoMusica(false);
+            }
+        }
+
+        function ajustarVolumen(valor) {
+            if (!audioFondo) return;
+
+            const vol = parseFloat(valor);
+            if (Number.isNaN(vol)) return;
+
+            if (!intervaloFade) {
+                audioFondo.volume = vol;
+            }
+        }
+    </script>
+</body>
+</html>
